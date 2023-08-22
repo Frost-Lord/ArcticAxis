@@ -1,18 +1,32 @@
 org 0x0
 bits 16
 
-
 %define ENDL 0x0D, 0x0A
-
+%define BOOT_LOGO "ArcticAxis"
 
 start:
-    ; print hello world message
+    ; clear the screen
+    call clearScreen
+
+    ; print message
     mov si, msg_kernal
+    call puts
+
+    ; Print boot logo BOOT_LOGO
+    mov si, msg_LOGO
     call puts
 
 .halt:
     cli
     hlt
+
+;
+; Clears the screen
+;
+clearScreen:
+    mov ax, 0x0003
+    int 0x10
+    ret
 
 ;
 ; Prints a string to the screen
@@ -43,3 +57,4 @@ puts:
     ret
 
 msg_kernal: db 'KERNEL Loaded...', ENDL, 0
+msg_LOGO: db BOOT_LOGO, ENDL, 0

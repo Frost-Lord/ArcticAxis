@@ -6,6 +6,7 @@ A simple OS
 sudo apt update
 sudo apt install make nasm qemu
 snap install micro --classic
+sudo apt-get install mtools
 sudo apt install qemu-system-x86
 ```
 

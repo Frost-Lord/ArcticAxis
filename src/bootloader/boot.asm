@@ -30,7 +30,7 @@ ebr_drive_number:           db 0                    ; 0x00 floppy, 0x80 hdd, use
                             db 0                    ; reserved
 ebr_signature:              db 29h
 ebr_volume_id:              db 12h, 34h, 56h, 78h   ; serial number, value doesn't matter
-ebr_volume_label:           db 'NANOBYTE OS'        ; 11 bytes, padded with spaces
+ebr_volume_label:           db 'ARCTICAXIS OS'      ; 13 bytes, padded with spaces
 ebr_system_id:              db 'FAT12   '           ; 8 bytes
 
 ;
@@ -58,10 +58,6 @@ start:
     ; read something from floppy disk
     ; BIOS should set DL to drive number
     mov [ebr_drive_number], dl
-
-    ; show loading message
-    mov si, msg_loading
-    call puts
 
     ; read drive parameters (sectors per track and head count),
     ; instead of relying on data on formatted disk
@@ -361,8 +357,6 @@ disk_reset:
     popa
     ret
 
-
-msg_loading:            db 'Loading...', ENDL, 0
 msg_read_failed:        db 'Read from disk failed!', ENDL, 0
 msg_kernel_not_found:   db 'KERNEL.BIN file not found!', ENDL, 0
 file_kernel_bin:        db 'KERNEL  BIN'
@@ -372,7 +366,7 @@ KERNEL_LOAD_SEGMENT     equ 0x2000
 KERNEL_LOAD_OFFSET      equ 0
 
 
-times 510-($-$$) db 0
+times 510-($-$$)-2 db 0
 dw 0AA55h
 
 buffer:
