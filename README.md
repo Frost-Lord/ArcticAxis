@@ -4,7 +4,7 @@ A simple OS
 ## Install
 ```
 sudo apt update
-sudo apt install make nasm qemu
+sudo apt install make nasm qemu cargo
 snap install micro --classic
 sudo apt-get install mtools
 sudo apt install qemu-system-x86
