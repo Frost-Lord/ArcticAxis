@@ -4,37 +4,35 @@ bits 16
 %define ENDL 0x0D, 0x0A
 %define BOOT_LOGO "ArcticAxis"
 
+; ______________________________________________________________________________________________________________________
+;                                                    start
+; ______________________________________________________________________________________________________________________
+
 start:
-    ; clear the screen
     call clearScreen
 
-    ; print message
     mov si, msg_kernal
     call puts
 
-    ; Print boot logo BOOT_LOGO
     mov si, msg_LOGO
     call puts
+
+    ; Load the OS
+    %include "./src/os/actions.asm"
+    call show_menu
 
 .halt:
     cli
     hlt
 
-;
 ; Clears the screen
-;
 clearScreen:
     mov ax, 0x0003
     int 0x10
     ret
 
-;
-; Prints a string to the screen
-; Params:
-;   - ds:si points to string
-;
 puts:
-    ; save registers we will modify
+    ; save registers
     push si
     push ax
     push bx
