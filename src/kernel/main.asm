@@ -9,7 +9,6 @@ bits 16
 ; ______________________________________________________________________________________________________________________
 
 start:
-    call clearScreen
 
     mov si, msg_kernal
     call puts
@@ -17,9 +16,11 @@ start:
     mov si, msg_LOGO
     call puts
 
+    call clearScreen
+
     ; Load the OS
-    %include "./src/os/actions.asm"
-    call show_menu
+    %include "./src/kernel/loadOS.asm"
+    call loadOS
 
 .halt:
     cli
