@@ -19,7 +19,8 @@ start:
 
     ; Load the OS
     %include "./src/os/actions.asm"
-    call show_menu
+    call set_graphics_mode
+    call draw_menu
 
 .halt:
     cli
