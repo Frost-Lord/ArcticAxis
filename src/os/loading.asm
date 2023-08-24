@@ -3,35 +3,19 @@ section .data
 section .text
 
 load_animation:
-    ; Calculate the center position
-    mov ax, 0xB800 ; Video memory
-    mov es, ax
-    mov di, 3840 ; Center of the screen (40*12*2)
+    mov di, 68 ; Top middle of the screen (38 * 2)
 
-    ; Draw the top border
-    mov cx, 14
-top_border:
-    ; Draw the side borders and text
+    ; Draw the animation
     mov si, message
-    add di, 56 ; Move to the next line
-    mov word [es:di - 2], 0xBA20 ; Left border
-side_and_text:
-    lodsb
-    or al, al
-    jz bottom_border
-    mov ah, 0x07 ; White on black
-    stosw
-    loop side_and_text
+top_draw:
+    lodsb             ; Load next character into al
+    or al, al         ; Check if it's null terminator
+    jz animation_done ; If it is, end the animation
+    mov ah, 0x09     ; Blue on black
+    stosw             ; Store ax at es:di and increment di by 2
+    jmp top_draw     ; Repeat
 
-bottom_border:
-    mov word [es:di], 0xBA20 ; Right border
-
-    ; Draw the bottom border
-    add di, 58 ; Move to the next line
-    mov cx, 14
-bottom_draw:
-
-
+animation_done:
     ret
 
 section .data

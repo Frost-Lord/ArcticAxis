@@ -9,8 +9,6 @@ section .data
     done_message db ' done', 0
     cpu_message db 'Initializing cpu:', 0
     disk_message db 'Loading disk drivers:', 0
-
-    bootos_message db 'Bootig the OS', 0
     newline db 0x0D, 0x0A, 0
 
 section .text
@@ -21,6 +19,10 @@ section .text
 ; ______________________________________________________________________________________________________________________
 
 boot_animation:
+
+    mov ax, 0xB800 ; Video memory
+    mov es, ax
+
     ; Boot
     mov si, boot_message
     call puts
@@ -66,12 +68,7 @@ boot_animation:
     call puts
     call new_line
 
-    call puts
-    call new_line
-
-    mov si, bootos_message    
-
-        ; Load the OS animation
+            ; Load the OS animation
     %include "./src/os/loading.asm"
     call load_animation
 
