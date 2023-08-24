@@ -1,10 +1,8 @@
 section .data
-
     boot_message db 'Boot:', 0
     kernel_message db 'kernel:', 0
     os_message db 'OS', 0
     suc_message db ' Successful!', 0
-
     ram_message db 'Allocating ram:', 0
     done_message db ' done', 0
     cpu_message db 'Initializing cpu:', 0
@@ -14,14 +12,10 @@ section .data
 section .text
     extern puts
 
-; ______________________________________________________________________________________________________________________
-;                                                    start
-; ______________________________________________________________________________________________________________________
-
 boot_animation:
-
     mov ax, 0xB800 ; Video memory
     mov es, ax
+    xor di, di ; Clear DI to start at the beginning of video memory
 
     ; Boot
     mov si, boot_message
@@ -43,7 +37,6 @@ boot_animation:
     mov si, suc_message
     call puts
     call new_line
-
     call puts
     call new_line
 
@@ -51,37 +44,38 @@ boot_animation:
     mov si, ram_message
     call puts
     mov si, done_message
-    call puts
+    call puts_blue
     call new_line
 
     ; Initializing CPU
     mov si, cpu_message
     call puts
     mov si, done_message
-    call puts
+    call puts_blue
     call new_line
 
     ; Loading Disk Drivers
     mov si, disk_message
     call puts
     mov si, done_message
-    call puts
-    call new_line
+    call puts_blue
 
-            ; Load the OS animation
     %include "./src/os/loading.asm"
     call load_animation
 
     ret
 
-print_message:
-    push edx            ; Save the address of the message
-    push ecx            ; Save the length of the message
-    pop edx             ; Restore the length
-    pop ecx             ; Restore the address
-    mov eax, 4          ; syscall: write
-    mov ebx, 1          ; file descriptor: stdout
-    int 0x80            ; call kernel
+puts_blue:
+    pusha
+    .repeat:
+        lodsb
+        or al, al
+        jz .end_puts_blue
+        mov ah, 0x09 ; Attribute byte for blue foreground
+        stosw       ; Store AX into ES:[DI] and increment DI by 2
+        jmp .repeat
+    .end_puts_blue:
+    popa
     ret
 
 new_line:

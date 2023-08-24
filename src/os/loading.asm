@@ -11,7 +11,7 @@ top_draw:
     lodsb             ; Load next character into al
     or al, al         ; Check if it's null terminator
     jz animation_done ; If it is, end the animation
-    mov ah, 0x09     ; Blue on black
+    mov ah, 1001b     ; Blue on black
     stosw             ; Store ax at es:di and increment di by 2
     jmp top_draw     ; Repeat
 
