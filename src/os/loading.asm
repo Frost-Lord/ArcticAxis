@@ -11,10 +11,6 @@ load_animation:
     ; Draw the top border
     mov cx, 14
 top_border:
-    mov word [es:di], 0xCD20
-    add di, 2
-    loop top_border
-
     ; Draw the side borders and text
     mov si, message
     add di, 56 ; Move to the next line
@@ -34,9 +30,7 @@ bottom_border:
     add di, 58 ; Move to the next line
     mov cx, 14
 bottom_draw:
-    mov word [es:di], 0xCD20
-    add di, 2
-    loop bottom_draw
+
 
     ret
 

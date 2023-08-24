@@ -69,13 +69,11 @@ boot_animation:
     call puts
     call new_line
 
-    mov si, bootos_message
+    mov si, bootos_message    
 
-
-    ; Load the OS animation
+        ; Load the OS animation
     %include "./src/os/loading.asm"
     call load_animation
-    
 
     ret
 
