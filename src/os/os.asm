@@ -12,6 +12,9 @@ load_os:
     %include "./src/os/boot.asm"  
     call boot_animation
 
+    call clearScreen
+    call delay
+
     %include "./src/os/display.asm"     
     call displayload 
 

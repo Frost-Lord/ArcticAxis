@@ -20,7 +20,7 @@ boot_animation:
     ; Boot
     mov si, boot_message
     call puts
-    mov di, 364
+    mov di, 364 ; +160 for next line, same position
     mov si, suc_message
     call puts_green
     call new_line
@@ -68,9 +68,6 @@ boot_animation:
     mov si, done_message
     call delay
     call puts_blue
-
-    call clearScreen
-    call delay
 
     ret
 
