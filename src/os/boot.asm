@@ -10,15 +10,9 @@ section .data
     done_message db ' done', 0
     suc_message db ' Successful!', 0
 
-    newline db 0x0D, 0x0A, 0
-
-section .text
-    extern puts
+section .text    
 
 boot_animation:
-    mov ax, 0xB800 ; Video memory
-    mov es, ax
-    xor di, di ; Clear DI to start at the beginning of video memory
 
     call new_line
     call new_line
@@ -54,6 +48,7 @@ boot_animation:
     call puts
     mov di, 1164
     mov si, done_message
+    call delay
     call puts_blue
     call new_line
 
@@ -62,6 +57,7 @@ boot_animation:
     call puts
     mov di, 1324
     mov si, done_message
+    call delay
     call puts_blue
     call new_line
 
@@ -70,11 +66,28 @@ boot_animation:
     call puts
     mov di, 1484
     mov si, done_message
+    call delay
     call puts_blue
 
-    %include "./src/os/loading.asm"
-    call load_animation
+    call clearScreen
+    call delay
 
+    ret
+
+delay:
+    push cx
+    push dx
+    mov cx, 0x1388 ; 0x2710 = 1s | 0x4E20 = 2s
+    .outer_loop:
+        mov dx, 0xFFFF
+        .inner_loop:
+            nop
+            nop
+            dec dx
+            jnz .inner_loop
+        loop .outer_loop
+    pop dx
+    pop cx
     ret
 
 puts_blue:

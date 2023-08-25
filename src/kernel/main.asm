@@ -19,11 +19,9 @@ start:
     call clearScreen
 
     ; Load the OS
-    %include "./src/os/boot.asm"
-    
-    ; Switch to 32 bit
-    ;%include "./src/kernel/loadOS.asm"
-    ;call loadOS
+    %include "./src/os/os.asm"    
+    call load_os
+
 
 .halt:
     cli
