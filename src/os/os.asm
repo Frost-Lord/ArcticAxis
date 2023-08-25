@@ -9,13 +9,25 @@ load_os:
     mov es, ax
     xor di, di ; Clear DI to start at the beginning of video memory
 
-    %include "./src/os/boot.asm"  
-    call boot_animation
-
-    call clearScreen
-    call delay
-
-    %include "./src/os/display.asm"     
-    call displayload 
+    call startup_routine
 
     ret
+
+new_line:
+    mov si, newline
+    call puts
+    ret
+
+startup_routine:
+    extern boot_animation
+    extern displayload
+    
+    call boot_animation
+    call display_nav
+    call displayload
+
+    ret
+
+%include "./src/os/boot.asm"
+%include "./src/os/display.asm"
+%include "./src/os/nav/navigation.asm"

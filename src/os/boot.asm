@@ -69,6 +69,11 @@ boot_animation:
     call delay
     call puts_blue
 
+    xor di, di
+    call clearScreen
+    call new_line
+    call new_line
+
     ret
 
 delay:
@@ -111,9 +116,4 @@ puts_green:
         jmp .repeat
     .end_puts_green:
     popa
-    ret
-
-new_line:
-    mov si, newline
-    call puts
     ret
