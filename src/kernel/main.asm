@@ -16,7 +16,7 @@ start:
     mov si, msg_LOGO
     call puts
 
-    call clearScreen
+    call ScreenClear
 
     ; Load the OS
     %include "./src/os/os.asm"    
@@ -28,7 +28,7 @@ start:
     hlt
 
 ; Clears the screen
-clearScreen:
+ScreenClear:
     mov ax, 0x0003
     int 0x10
     ret

@@ -16,6 +16,7 @@ section .data
 section .text
 
 displayload:
+    extern promptCmd
 
     ; Genral
     mov si, version
@@ -63,7 +64,8 @@ displayload:
     call new_line
     call new_line
 
-    mov si, enter_msg
-    call puts
+    call promptCmd
     
     ret
+
+%include "./src/os/login/runcmd.asm"

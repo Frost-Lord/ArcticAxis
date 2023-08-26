@@ -6,9 +6,6 @@ section .text
     extern puts
 
 display_nav:
-    mov ax, 0xB800 ; Video memory
-    mov es, ax
-
     mov di, 70
     mov si, Name
     call puts_grey
@@ -21,7 +18,7 @@ display_nav:
     ret
 
 new_lineee:
-    add di, 88
+    add di, 90
     ret
 
 puts_grey:

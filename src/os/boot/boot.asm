@@ -22,7 +22,7 @@ boot_animation:
     call puts
     mov di, 364 ; +160 for next line, same position
     mov si, suc_message
-    call puts_green
+    call puts_Green
     call new_line
 
     ; Kernel
@@ -30,7 +30,7 @@ boot_animation:
     call puts
     mov di, 524
     mov si, suc_message
-    call puts_green
+    call puts_Green
     call new_line
 
     ; OS
@@ -38,7 +38,7 @@ boot_animation:
     call puts
     mov di, 684
     mov si, suc_message
-    call puts_green
+    call puts_Green
     call new_line
     call puts
     call new_line
@@ -48,8 +48,8 @@ boot_animation:
     call puts
     mov di, 1164
     mov si, done_message
-    call delay
-    call puts_blue
+    call delay_500ms
+    call puts_Blue
     call new_line
 
     ; Initializing CPU
@@ -57,8 +57,8 @@ boot_animation:
     call puts
     mov di, 1324
     mov si, done_message
-    call delay
-    call puts_blue
+    call delay_500ms
+    call puts_Blue
     call new_line
 
     ; Loading Disk Drivers
@@ -66,54 +66,12 @@ boot_animation:
     call puts
     mov di, 1484
     mov si, done_message
-    call delay
-    call puts_blue
+    call delay_500ms
+    call puts_Blue
 
     xor di, di
-    call clearScreen
+    call clear_all
     call new_line
     call new_line
 
-    ret
-
-delay:
-    push cx
-    push dx
-    mov cx, 0x1388 ; 0x2710 = 1s | 0x4E20 = 2s
-    .outer_loop:
-        mov dx, 0xFFFF
-        .inner_loop:
-            nop
-            nop
-            dec dx
-            jnz .inner_loop
-        loop .outer_loop
-    pop dx
-    pop cx
-    ret
-
-puts_blue:
-    pusha
-    .repeat:
-        lodsb
-        or al, al
-        jz .end_puts_blue
-        mov ah, 0x09
-        stosw
-        jmp .repeat
-    .end_puts_blue:
-    popa
-    ret
-
-puts_green:
-    pusha
-    .repeat:
-        lodsb
-        or al, al
-        jz .end_puts_green
-        mov ah, 0010b
-        stosw
-        jmp .repeat
-    .end_puts_green:
-    popa
     ret
