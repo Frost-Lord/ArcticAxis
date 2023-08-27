@@ -1,55 +1,95 @@
 section .data
     promptCmd_msg db 'root@:ArcticAxis: ', 0
+    LineFeed db 13, 10, 0 ; Carriage return and Line feed
 
     ; Commands
-    help_msg db 'help', 0
-    run_msg db 'run', 0
-    reboot_msg db 'reboot', 0
+    help_cmd_name db 'help', 0
+    clear_cmd_name db 'clear', 0
+    reboot_cmd_name db 'reboot', 0
 
-    input_buffer db 10 ; Buffer size for the user input
+    ; Buffer
+    input_buffer db 10 dup(0) ; Buffer size for the user input
 
 section .text
 
+%include "./src/os/login/loadcmds.asm"
+
 promptCmd:
-    ; Display prompt
     mov si, promptCmd_msg
-    call putss
+    call puts
 
     ; Get user input
     mov si, input_buffer
     call gets
 
-    ; Check if input is 'help'
+; __________________________________________________________________________________________________________________________
+; CMDS
+; __________________________________________________________________________________________________________________________
+
+    ; Clear
     mov si, input_buffer
-    mov di, help_msg
+    mov di, help_cmd_name
     call strcmp
     cmp ax, 0
     je .found_help
+
+    ; Clear
+    mov si, input_buffer
+    mov di, clear_cmd_name
+    call strcmp
+    cmp ax, 0
+    je .found_clear
+
+    ; Reboot
+    mov si, input_buffer
+    mov di, reboot_cmd_name
+    call strcmp
+    cmp ax, 0
+    je .found_reboot
+
     jmp .not_found
 
-.found_help:
-    ; Code for 'help' command
-    mov si, help_msg
-    call putss
-    ret
+; __________________________________________________________________________________________________________________________
+; Found commands
+; __________________________________________________________________________________________________________________________
 
-.not_found:
-    ; Command not found
+.found_help:
+    call new_line
+    call HelpCmd
+    jmp .end_cmd
+
+.found_clear:
+    call new_line
+    call ClearCmd
+    jmp .end_cmd
+
+.found_reboot:
+    call new_line
+    call RebootCmd
+    jmp .end_cmd
+
+; __________________________________________________________________________________________________________________________
+; Not found commands
+; __________________________________________________________________________________________________________________________
+
+.end_cmd:
+    mov si, LineFeed
+    call puts
     call promptCmd
     ret
 
-; Custom putss function
-putss:
-    lodsb
-    or al, al
-    jz .done
-    mov ah, 0x0E
-    mov bh, 0x00
-    mov bl, 0x07
-    int 0x10
-    jmp putss
+.not_found:
+    mov si, LineFeed
+    call puts
+    call promptCmd
+    ret
+
 .done:
     ret
+
+; __________________________________________________________________________________________________________________________
+; Functions
+; __________________________________________________________________________________________________________________________
 
 ; Custom gets function
 gets:
@@ -59,13 +99,18 @@ gets:
     int 0x16
     mov ah, 0x0E
     int 0x10
-    mov [si + cx], al
+    mov bx, si
+    add bx, cx
+    mov ds:[bx], al
     inc cx
     cmp al, 0x0D ; Enter key
     jz .done
     jmp .loop
 .done:
-    mov byte [si + cx], 0 ; Null-terminate
+    mov bx, si
+    add bx, cx
+    dec bx ; adjust for the Enter key
+    mov byte ds:[bx], 0 ; Null-terminate
     ret
 
 ; Custom strcmp function
@@ -77,10 +122,13 @@ strcmp:
     cmp al, ah
     jne .done
     or al, al
-    jz .done
+    jz .set_equal
     inc si
     inc di
     jmp .loop
+.set_equal:
+    xor ax, ax
+    ret
 .done:
     sub al, ah
     ret
