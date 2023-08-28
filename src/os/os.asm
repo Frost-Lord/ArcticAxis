@@ -1,5 +1,6 @@
 section .text
     extern puts
+    extern gets
 
 load_os:
     mov ax, 0xB800 ; Video memory
@@ -11,19 +12,19 @@ load_os:
     ret
 
 startup_routine:
-    extern boot_animation
-    extern displayload
-    extern display_nav
+    ;extern boot_animation
+    ;extern displayload
+    ;extern display_nav
     extern login
     
     call login
-    call display_nav
-    call boot_animation
-    call displayload
+    ;call display_nav
+    ;call boot_animation
+    ;call displayload
 
     ret
 
 %include "./src/os/global/functions.asm"
-%include "./src/os/boot/boot.asm"
-%include "./src/os/login/display.asm"
+;%include "./src/os/boot/boot.asm"
+;%include "./src/os/login/display.asm"
 %include "./src/os/login/users/manage.asm"
