@@ -12,6 +12,8 @@ section .data
 
     u_filename db 'users.txt', 0
 
+    file_contents db 'File data: ', 0
+
     input_username db 'You entered username: ', 0
     input_password db 'You entered password: ', 0
 
@@ -56,29 +58,38 @@ login:
     call new_line
 
     ; Read and log file content
-    mov edi, u_filename
+    mov di, u_filename
     call open_file
-    test eax, eax
+    test ax, ax
     jnz file_not_found
 
-    mov edi, file_content
-    mov ecx, 256
+    mov di, file_content
+    mov cx, 256  ; The immediate value, not [ecx]
     call read_file
-    test eax, eax
+    test ax, ax
     jnz read_failed
 
     ; Save file_content to userdb
-    mov esi, file_content
-    mov edi, userdb
-    mov ecx, 256
-    rep movsb
+    push ds      ; Save DS register
+    push es      ; Save ES register
+    pop ds       ; Set DS to ES (DS:SI and ES:DI should point to the same segment)
+    mov si, file_content
+    mov di, userdb
+    mov cx, 256  ; Number of bytes to copy
+    cld          ; Clear direction flag for movsb
+    rep movsb    ; Copy from DS:SI to ES:DI
 
-    mov esi, read_success_msg
+    pop ds       ; Restore DS
+    pop es       ; Restore ES
+
+    mov si, read_success_msg
     call puts
     call new_line
 
     ; Log userdb content
-    mov esi, userdb
+    mov si, file_contents
+    call puts
+    mov si, userdb
     call puts
     call new_line
 
