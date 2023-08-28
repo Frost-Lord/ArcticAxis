@@ -4,13 +4,13 @@ section .data
     user_not_found_msg db 'User not found', 0
 
     read_fail_msg db 'Read Failed', 0
-    fild_not_found_msg db 'File not found', 0
+    file_not_found_msg db 'File not found', 0  ; Fixed typo here
     read_success_msg db 'File Read Successfully', 0
 
     u_string db "User >> ", 0
     p_string db "Pass >> ", 0
 
-    u_filename db './src/os/login/users/users.txt', 0
+    u_filename db 'users.txt', 0
 
     input_username db 'You entered username: ', 0
     input_password db 'You entered password: ', 0
@@ -19,8 +19,9 @@ section .data
 
     username times 16 db 0
     password times 16 db 0
+    userdb times 256 db 0
 
-    file_content times 256 db 0 ; Buffer for file content - make dynamic later
+    file_content times 256 db 0
     file_handle dw 0
 
 section .text
@@ -58,26 +59,33 @@ login:
     mov edi, u_filename
     call open_file
     test eax, eax
-    jz file_not_found
+    jnz file_not_found
 
     mov edi, file_content
-    mov ecx, 256 ; size of buffer
+    mov ecx, 256
     call read_file
     test eax, eax
-    jz read_failed
+    jnz read_failed
+
+    ; Save file_content to userdb
+    mov esi, file_content
+    mov edi, userdb
+    mov ecx, 256
+    rep movsb
 
     mov esi, read_success_msg
     call puts
     call new_line
 
-    mov esi, file_content
+    ; Log userdb content
+    mov esi, userdb
     call puts
     call new_line
 
     ret
 
 file_not_found:
-    mov esi, fild_not_found_msg
+    mov esi, file_not_found_msg
     call puts
     call new_line
     ret
@@ -89,8 +97,8 @@ read_failed:
     ret
 
 open_file:
-    mov ah, 3Dh ; open file
-    mov al, 00h ; read-only
+    mov ah, 3Dh
+    mov al, 0
     lea dx, [edi]
     int 21h
     jc .fail
@@ -102,9 +110,8 @@ open_file:
     mov eax, 1
     ret
 
-; Read file content
 read_file:
-    mov ah, 3Fh ; read from file
+    mov ah, 3Fh
     lea dx, [edi]
     mov cx, [ecx]
     mov bx, [file_handle]
