@@ -14,7 +14,9 @@ startup_routine:
     extern boot_animation
     extern displayload
     extern display_nav
+    extern login
     
+    call login
     call display_nav
     call boot_animation
     call displayload
@@ -24,3 +26,4 @@ startup_routine:
 %include "./src/os/global/functions.asm"
 %include "./src/os/boot/boot.asm"
 %include "./src/os/login/display.asm"
+%include "./src/os/login/users/manage.asm"
