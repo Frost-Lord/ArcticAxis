@@ -4,7 +4,7 @@ section .data
     user_not_found_msg db 'User not found', 0
 
     read_fail_msg db 'Read Failed', 0
-    file_not_found_msg db 'File not found', 0  ; Fixed typo here
+    file_not_found_msg db 'File not found', 0
     read_success_msg db 'File Read Successfully', 0
 
     u_string db "User >> ", 0
@@ -58,38 +58,38 @@ login:
     call new_line
 
     ; Read and log file content
-    mov di, u_filename
+    mov edi, u_filename
     call open_file
     test ax, ax
     jnz file_not_found
 
-    mov di, file_content
-    mov cx, 256  ; The immediate value, not [ecx]
+    mov edi, file_content
+    mov cx, 256
     call read_file
     test ax, ax
     jnz read_failed
 
     ; Save file_content to userdb
-    push ds      ; Save DS register
-    push es      ; Save ES register
-    pop ds       ; Set DS to ES (DS:SI and ES:DI should point to the same segment)
+    push ds
+    push es
+    pop ds
     mov si, file_content
     mov di, userdb
-    mov cx, 256  ; Number of bytes to copy
-    cld          ; Clear direction flag for movsb
-    rep movsb    ; Copy from DS:SI to ES:DI
+    mov cx, 256
+    cld
+    rep movsb
 
-    pop ds       ; Restore DS
-    pop es       ; Restore ES
+    pop ds
+    pop es
 
-    mov si, read_success_msg
+    mov esi, read_success_msg
     call puts
     call new_line
 
     ; Log userdb content
-    mov si, file_contents
+    mov esi, file_contents
     call puts
-    mov si, userdb
+    mov esi, userdb
     call puts
     call new_line
 
@@ -124,7 +124,6 @@ open_file:
 read_file:
     mov ah, 3Fh
     lea dx, [edi]
-    mov cx, [ecx]
     mov bx, [file_handle]
     int 21h
     jc .fail
