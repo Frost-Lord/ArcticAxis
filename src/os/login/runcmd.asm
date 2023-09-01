@@ -20,7 +20,7 @@ promptCmd:
 
     ; Get user input
     mov si, input_buffer
-    call gets
+    call cmd_data
 
 ; __________________________________________________________________________________________________________________________
 ; CMDS
@@ -91,7 +91,27 @@ promptCmd:
 ; Functions
 ; __________________________________________________________________________________________________________________________
 
-; Custom strcmp function
+cmd_data:
+    xor cx, cx
+.loop:
+    mov ah, 0x00
+    int 0x16
+    mov ah, 0x0E
+    int 0x10
+    mov bx, si
+    add bx, cx
+    mov ds:[bx], al
+    inc cx
+    cmp al, 0x0D ; Enter key
+    jz .done
+    jmp .loop
+.done:
+    mov bx, si
+    add bx, cx
+    dec bx
+    mov byte ds:[bx], 0
+    ret
+
 strcmp:
     xor ax, ax
 .loop:
