@@ -1,6 +1,8 @@
 # ArcticAxis
 ArcticAxis is a minimal operating system written in 16-bit x86 Assembly. It features a simple shell interface where you can run basic commands like help, clear, and reboot.
 
+<img src="./imgs/2023-09-01 18-43-54.png">
+
 ## Install
 To get started with ArcticAxis, you'll need to install several packages including make, nasm, qemu, and micro.
 ```
